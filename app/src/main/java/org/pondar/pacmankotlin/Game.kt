@@ -28,6 +28,16 @@ class Game(private var context: Context,view: TextView) {
         // bitmap of the coins
         var coinBitmap: Bitmap
 
+        // directions
+        var left: Int = 1
+        var up: Int = 2
+        var right: Int = 3
+        var down: Int = 4
+
+        var running = false
+        var direction = right
+        var timer: Int = 60
+
         //did we initialize the coins?
         var coinsInitialized = false
 
@@ -87,39 +97,27 @@ class Game(private var context: Context,view: TextView) {
     }
 
     fun movePacmanRight(pixels: Int) {
-        //still within our boundaries?
-        if (pacx + pixels + pacBitmap.width < w) {
-            pacx = pacx + pixels
-            doCollisionCheck()
-            gameView!!.invalidate()
-        }
+        direction = right
     }
 
     fun movePacmanLeft(pixels: Int) {
-        //still within our boundaries?
-        if (pacx - pixels > 0) {
-            pacx = pacx - pixels
-            doCollisionCheck()
-            gameView!!.invalidate()
-        }
+        direction = left
     }
 
     fun movePacmanUp(pixels: Int) {
-        //still within our boundaries?
-        if (pacy - pixels > 0) {
-            pacy = pacy - pixels
-            doCollisionCheck()
-            gameView!!.invalidate()
-        }
+        direction = up
     }
 
     fun movePacmanDown(pixels: Int) {
-        //still within our boundaries?
-        if (pacy + pixels + pacBitmap.height < h) {
-            pacy = pacy + pixels
-            doCollisionCheck()
-            gameView!!.invalidate()
-        }
+        direction = down
+    }
+
+    fun stopGame() {
+        running = false
+    }
+
+    fun continueGame() {
+        running = true
     }
 
     //TODO check if the pacman touches a gold coin

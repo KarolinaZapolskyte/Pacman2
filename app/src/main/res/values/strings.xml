@@ -8,4 +8,8 @@
     <string name="move_left">Move left</string>
     <string name="move_up">Move up</string>
     <string name="move_down">Move down</string>
+    <string name="stop">stop</string>
+    <string name="continue_game">continue game</string>
+    <string name="stop_game">Stop game</string>
+    <string name="time_left">Time left:</string>
 </resources>

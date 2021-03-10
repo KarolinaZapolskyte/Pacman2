@@ -67,4 +67,29 @@ class GameView : View {
         super.onDraw(canvas)
     }
 
+    fun moveRight(x: Int) {
+        //still within our boundaries?
+        if (game!!.pacx + x + game!!.pacBitmap.width < w)
+            game?.pacx = game!!.pacx + x
+        invalidate() //redraw everything
+    }
+    fun moveUp(y: Int) {
+        //still within our boundaries?
+        if (game!!.pacy - y > 0)
+            game?.pacy = game!!.pacy - y
+        invalidate() //redraw everything
+    }
+    fun moveLeft(x: Int) {
+        //still within our boundaries?
+        if (game!!.pacx - x > 0)
+            game?.pacx = game!!.pacx - x
+        invalidate() //redraw everything
+    }
+    fun moveDown(y: Int) {
+        //still within our boundaries?
+        if (game!!.pacy + y + game!!.pacBitmap.height < h)
+            game?.pacy = game!!.pacy + y
+        invalidate() //redraw everything
+    }
+
 }
