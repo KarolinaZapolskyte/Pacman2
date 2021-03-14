@@ -47,6 +47,9 @@ class GameView : View {
             game?.initializeGoldcoins()
 
 
+        if (!(game!!.enemyInitialized))
+            game?.initializeEnemies()
+
         //Making a new paint object
         val paint = Paint()
         canvas.drawColor(Color.WHITE) //clear entire canvas to white color
@@ -62,10 +65,18 @@ class GameView : View {
                     coin?.y!!.toFloat(), paint)
 
         }
+        // Loop through enemies
+        for (enemy in game?.enemies!!) {
+            if(enemy.isAlive == true)
+                canvas.drawBitmap(game!!.enemyBitmap, enemy?.x!!.toFloat(),
+                        enemy?.y!!.toFloat(), paint)
+
+        }
 
         game?.doCollisionCheck()
         super.onDraw(canvas)
     }
+
 
     fun moveRight(x: Int) {
         //still within our boundaries?
@@ -90,6 +101,65 @@ class GameView : View {
         if (game!!.pacy + y + game!!.pacBitmap.height < h)
             game?.pacy = game!!.pacy + y
         invalidate() //redraw everything
+    }
+
+    fun moveRightEnemy(x: Int) {
+        //still within our boundaries?
+        for (enemy in game!!.enemies)
+        {
+            if (enemy.x + x + game!!.enemyBitmap.width < w)
+                enemy.x = enemy.x + x
+            invalidate() //redraw everything
+            if (game!!.pacy < enemy.y)
+                enemy.direction = game!!.up
+            else if (game!!.pacx < enemy.x)
+                enemy.direction = game!!.left
+            else if (game!!.pacy > enemy.y)
+                enemy.direction = game!!.down
+        }
+
+    }
+    fun moveUpEnemy(y: Int) {
+        //still within our boundaries?
+        for (enemy in game!!.enemies) {
+            if (enemy.y - y > 0)
+                enemy.y = enemy.y - y
+            invalidate() //redraw everything
+            if (game!!.pacx > enemy.x)
+                enemy.direction = game!!.right
+            else if (game!!.pacx < enemy.x)
+                enemy.direction = game!!.left
+            else if (game!!.pacy > enemy.y)
+                enemy.direction = game!!.down
+        }
+    }
+    fun moveLeftEnemy(x: Int) {
+        //still within our boundaries?
+        for (enemy in game!!.enemies) {
+            if (enemy.x - x > 0)
+                enemy.x = enemy.x - x
+            invalidate() //redraw everything
+            if (game!!.pacy < enemy.y)
+                enemy.direction = game!!.up
+            else if (game!!.pacx > enemy.x)
+                enemy.direction = game!!.right
+            else if (game!!.pacy > enemy.y)
+                enemy.direction = game!!.down
+        }
+    }
+    fun moveDownEnemy(y: Int) {
+        //still within our boundaries?
+        for (enemy in game!!.enemies) {
+            if (enemy.y + y + game!!.enemyBitmap.height < h)
+                enemy.y = enemy.y + y
+            invalidate() //redraw everything
+            if (game!!.pacy < enemy.y)
+                enemy.direction = game!!.up
+            else if (game!!.pacx < enemy.x)
+                enemy.direction = game!!.left
+            else if (game!!.pacx > enemy.x)
+                enemy.direction = game!!.right
+        }
     }
 
 }

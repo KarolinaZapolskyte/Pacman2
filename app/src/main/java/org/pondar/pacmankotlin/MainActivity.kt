@@ -16,6 +16,7 @@ class MainActivity() : AppCompatActivity() {
 
     //reference to the game class.
     private var game: Game? = null
+    private var enemy: Enemy? = null
 
     private var myTimer: Timer = Timer()
     private var myTimer2: Timer = Timer()
@@ -26,7 +27,7 @@ class MainActivity() : AppCompatActivity() {
         //makes sure it always runs in portrait mode
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_main)
-        game = Game(this,pointsView)
+        game = Game(this,pointsView, timerView, levelView)
 
         //intialize the game view clas and game class
         game?.setGameView(gameView)
@@ -98,11 +99,11 @@ class MainActivity() : AppCompatActivity() {
         if (game!!.running) {
             game?.timer = game!!.timer - 1
 
-            timerView.text = getString(R.string.time_left,game?.timer.toString()) + game?.timer
-        }
-        if (game!!.timer == 0) {
-            game?.running = false
-            timerView.text = getString(R.string.time_left,game?.timer.toString()) + "Game over"
+            timerView.text = getString(R.string.time_left, game?.timer.toString()) + game?.timer
+            if (game!!.timer == 0) {
+                game?.running = false
+                timerView.text = getString(R.string.time_left, game?.timer.toString()) + "Game over"
+            }
         }
     }
 
@@ -116,22 +117,45 @@ class MainActivity() : AppCompatActivity() {
 //            //faster than every second
             if (game?.direction==game?.right)
             { // move right
-                gameView.moveRight(20)
+                gameView.moveRight(40)
                 //move the pacman - you
                 //should call a method on your game class to move
                 //the pacman instead of this - you have already made that
             }
             else if (game?.direction==game?.up)
             {
-                gameView.moveUp(20)
+                gameView.moveUp(40)
             }
             else if (game?.direction==game?.left)
             {
-                gameView.moveLeft(20)
+                gameView.moveLeft(40)
             }
             else {
-                gameView.moveDown(20)
+                gameView.moveDown(40)
             }
+            for(enemy in game!!.enemies)
+            {
+                if (enemy.direction ==game?.right)
+                { // move right
+                    gameView.moveRightEnemy(1)
+                    //move the pacman - you
+                    //should call a method on your game class to move
+                    //the pacman instead of this - you have already made that
+                }
+                else if (enemy.direction==game?.up)
+                {
+                    gameView.moveUpEnemy(1)
+                }
+                else if (enemy.direction==game?.left)
+                {
+                    gameView.moveLeftEnemy(1)
+                }
+                else {
+                    gameView.moveDownEnemy(1)
+                }
+            }
+
+
         }
     }
 
@@ -152,6 +176,10 @@ class MainActivity() : AppCompatActivity() {
             return true
         } else if (id == R.id.action_newGame) {
             Toast.makeText(this, "New Game clicked", Toast.LENGTH_LONG).show()
+            game?.currentLevel = 1
+            game?.points = 0
+            game?.oldPoints = 0
+            game?.coinAmount = 1
             game?.newGame()
             return true
         }

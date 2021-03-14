@@ -16,10 +16,13 @@ import kotlin.random.Random
  * This class should contain all your game logic
  */
 
-class Game(private var context: Context,view: TextView) {
+class Game(private var context: Context,view: TextView,view2: TextView, view3: TextView) {
 
         private var pointsView: TextView = view
-        private var points : Int = 0
+        private var timerView: TextView = view2
+        private var levelView: TextView = view3
+    var points : Int = 0
+    var oldPoints : Int = 0
         //bitmap of the pacman
         var pacBitmap: Bitmap
         var pacx: Int = 0
@@ -40,15 +43,23 @@ class Game(private var context: Context,view: TextView) {
 
         //did we initialize the coins?
         var coinsInitialized = false
+        var enemyInitialized = false
 
         //the list of goldcoins - initially empty
         var coins = ArrayList<GoldCoin>()
-        var coinAmount = 15
+        var coinAmount = 1
         //a reference to the gameview
         private var gameView: GameView? = null
         private var h: Int = 0
         private var w: Int = 0 //height and width of screen
 
+        // enemies
+        var enemies = ArrayList<Enemy>();
+        var enemyBitmap: Bitmap
+        var enemyAmount = 1
+        var enemyDirection = right
+
+        var currentLevel: Int = 1
 
 
     //The init code is called when we create a new Game class.
@@ -61,6 +72,10 @@ class Game(private var context: Context,view: TextView) {
         coinBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.gold_coin2)
     }
 
+    init {
+        enemyBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.enemy2)
+    }
+
     fun setGameView(view: GameView) {
         this.gameView = view
     }
@@ -69,10 +84,19 @@ class Game(private var context: Context,view: TextView) {
     fun initializeGoldcoins()
     {
         //DO Stuff to initialize the array list with some coins.
-        for (i in 1..coinAmount)
+        for (i in 1..(coinAmount + (currentLevel*2)))
         coins.add(GoldCoin(Random.nextInt(200, w-200),Random.nextInt(200, h-200),false))
 
         coinsInitialized = true
+    }
+
+    fun initializeEnemies()
+    {
+        //DO Stuff to initialize the array list with some coins.
+        for (i in 1..currentLevel)
+            enemies.add(Enemy(Random.nextInt(200, w-200),Random.nextInt(200, h-200), true, right))
+
+        enemyInitialized = true
     }
 
     fun distance(x1:Int,y1:Int,x2:Int,y2:Int): Double {
@@ -87,9 +111,15 @@ class Game(private var context: Context,view: TextView) {
         //reset the points
         coinsInitialized = false
         coins = ArrayList<GoldCoin>()
-        points = 0
+        enemies = ArrayList<Enemy>()
+        enemyInitialized = false
         pointsView.text = "${context.resources.getString(R.string.points)} $points"
+        timer = 60
+        timerView.text = "${context.resources.getString(R.string.time_left)} $timer"
+        levelView.text = "${context.resources.getString(R.string.level)} $currentLevel"
+        running = true
         gameView?.invalidate() //redraw screen
+
     }
     fun setSize(h: Int, w: Int) {
         this.h = h
@@ -126,15 +156,26 @@ class Game(private var context: Context,view: TextView) {
     //so you need to go through the arraylist of goldcoins and
     //check each of them for a collision with the pacman
     fun doCollisionCheck() {
-        for (coin in coins) {
-            if (distance(pacx, pacy, coin.x, coin.y) < 100 && coin.taken == false) {
-                coin.taken = true
-                points = points + 1
-                pointsView.text = "${context.resources.getString(R.string.points)} $points"
+        if (running) {
+            for (coin in coins) {
+                if (distance(pacx, pacy, coin.x, coin.y) < 100 && coin.taken == false) {
+                    coin.taken = true
+                    points = points + 1
+                    pointsView.text = "${context.resources.getString(R.string.points)} $points"
+                }
+            }
+            for (enemy in enemies) {
+                if (distance(pacx, pacy, enemy.x, enemy.y) < 100 && enemy.isAlive == true) {
+                    timer = 1
+                }
+            }
+            if (points == coinAmount+ (currentLevel*2) + oldPoints) {
+                oldPoints = points
+                coinAmount = coinAmount + (currentLevel*2)
+                currentLevel++
+                newGame()
             }
         }
-        if (points == coinAmount)
-            pointsView.text = "You won, please start a new game"
     }
 
 

@@ -12,4 +12,5 @@
     <string name="continue_game">continue game</string>
     <string name="stop_game">Stop game</string>
     <string name="time_left">Time left:</string>
+    <string name="level">Level:</string>
 </resources>
