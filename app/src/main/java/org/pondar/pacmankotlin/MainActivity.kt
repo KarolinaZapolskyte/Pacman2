@@ -137,21 +137,21 @@ class MainActivity() : AppCompatActivity() {
             {
                 if (enemy.direction ==game?.right)
                 { // move right
-                    gameView.moveRightEnemy(1)
+                    gameView.moveRightEnemy(10)
                     //move the pacman - you
                     //should call a method on your game class to move
                     //the pacman instead of this - you have already made that
                 }
                 else if (enemy.direction==game?.up)
                 {
-                    gameView.moveUpEnemy(1)
+                    gameView.moveUpEnemy(10)
                 }
                 else if (enemy.direction==game?.left)
                 {
-                    gameView.moveLeftEnemy(1)
+                    gameView.moveLeftEnemy(10)
                 }
                 else {
-                    gameView.moveDownEnemy(1)
+                    gameView.moveDownEnemy(10)
                 }
             }
 
